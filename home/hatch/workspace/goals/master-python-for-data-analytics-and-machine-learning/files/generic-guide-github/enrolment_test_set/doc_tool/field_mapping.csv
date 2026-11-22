@@ -1,0 +1,9 @@
+Title,LetterCode,SourceDocType,ControlTag,SourceType,DataType,SourceLabel,Required,SortOrder
+Reference Number,ENROL_CONFIRM,Enrolment Form,ReferenceNumber,Extract,Text,Reference Number,Yes,10
+Date Submitted,ENROL_CONFIRM,Enrolment Form,DateSubmitted,Extract,Date,Date Submitted,Yes,20
+Application Status,ENROL_CONFIRM,Enrolment Form,ApplicationStatus,Extract,Status,Application Status,Yes,30
+Amount Due,ENROL_CONFIRM,Fee Statement,AmountDue,Extract,Amount,Amount Due,Yes,40
+Due Date,ENROL_CONFIRM,Fee Statement,DueDate,Extract,Date,Due Date,Yes,50
+Discount Applied,ENROL_CONFIRM,Fee Statement,DiscountApplied,Extract,Amount,Discount Applied,No,60
+Award Amount,ENROL_CONFIRM,Aid Award,AwardAmount,Extract,Amount,Award Amount,Yes,70
+Mailing Address,ENROL_CONFIRM,Aid Award,MailingAddress,Extract,Address,Mailing Address,Yes,80

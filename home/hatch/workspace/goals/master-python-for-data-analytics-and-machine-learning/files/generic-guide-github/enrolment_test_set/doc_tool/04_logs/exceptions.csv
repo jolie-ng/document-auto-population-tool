@@ -1,0 +1,5 @@
+RunStamp,SourceFile,FieldName,RawValue,Reason,Resolved
+20261122-1805,BenOkoro_EnrolmentForm.pdf,Date Submitted,,Blank value,No
+20261122-1805,ElenaRossi_EnrolmentForm.pdf,Application Status,Pending Review,Unexpected status,No
+20261122-1805,ElenaRossi_FeeStatement.pdf,Discount Applied,(150.00),Negative amount - verify credit,No
+20261122-1805,FinnHolt_FeeStatement.pdf,Amount Due,"EUR 1,120.00",Could not normalise,No
