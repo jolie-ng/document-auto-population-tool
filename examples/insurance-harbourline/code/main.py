@@ -124,6 +124,7 @@ def main():  # defines main — the whole run: find letter, loop PDFs, fill one 
         req_writer.writerow(["RunStamp", "LetterCode", "SourceDocType", "LetterFile", "DraftFile", "FlagCount", "Status"])  # writes its header row
     total_flags = 0  # starts the flag total for the whole run at 0
     drafts_made = 0  # starts the draft total for the whole run at 0
+    companion_texts = {}  # {PDF file name: text} — each companion PDF is read once and reused for every case
     try:  # everything in this block runs with both log files open — the finally block below always closes them
         for pdf_path in pdf_paths:  # THE LOOP — one primary PDF at a time; each claim is finished completely before the next begins
             print(f"Processing {pdf_path.name} ...")  # prints which PDF is being processed now
@@ -138,7 +139,9 @@ def main():  # defines main — the whole run: find letter, loop PDFs, fill one 
                 for cand in find_pdfs(other_type):  # loops through every PDF of that other type in 02_input_pdfs
                     if cand == pdf_path:  # if this candidate IS the primary PDF:
                         continue  # skips it — a PDF is never used as its own companion
-                    cand_text = pdf_to_text(cand)  # extracts the candidate PDF's text
+                    if cand.name not in companion_texts:  # if this candidate has not been read yet in this run:
+                        companion_texts[cand.name] = pdf_to_text(cand)  # extracts its text once and stores it
+                    cand_text = companion_texts[cand.name]  # the candidate PDF's text — reused, never read twice
                     cand_ref = _value_after(cand_text, "Claim Reference") or _value_after(cand_text, "Insurer Claim Reference")  # the candidate's claim reference
                     cand_pol = _value_after(cand_text, "Policy Number")  # the candidate's policy number
                     if claim_ref and cand_ref:  # if BOTH PDFs carry a claim reference:
@@ -168,7 +171,7 @@ def main():  # defines main — the whole run: find letter, loop PDFs, fill one 
             results.sort(key=lambda r: r["title"])  # sorts the merged results by field name — log order only; fill order does not matter
             fill = {r["tag"]: r["value"] for r in results}  # builds the fill dict {ControlTag: value} — flagged fields hold their [[CHECK: ...]] marker
             flags = [r for r in results if r["flagged"]]  # collects THIS claim's flagged fields only
-            claimant_part = claimant_from_text(text) or (_clean_filename_part(pdf_path.stem) or pdf_path.stem)  # claimant for the file name — from the PDF, else the PDF's file name
+            claimant_part = claimant_from_text(text) or (_clean_filename_part(pdf_path.stem.rsplit("_", 1)[0]) or pdf_path.stem)  # claimant for the file name — from the PDF, else the PDF's file name without its type suffix (AhmadZulkifli_AdjustmentReport -> AhmadZulkifli; a name with no _ keeps its full name)
             claim_part = _claim_part(fill, results)  # claim reference for the file name — UNKNOWN if that field was flagged/blank
             now = datetime.now()  # takes the time NOW — at the moment THIS claim is processed
             stamp = now.strftime("%Y%m%d-%H%M")  # log stamp for this claim's rows: YYYYMMDD-HHMM
